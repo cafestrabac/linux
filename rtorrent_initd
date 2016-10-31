@@ -1,0 +1,32 @@
+#!/bin/bash
+# source: http://unix.stackexchange.com/questions/20357/how-can-i-make-a-script-in-etc-init-d-start-at-boot
+
+USER=rtorrent
+case "$1" in
+start)
+   echo rtorrent is starting
+   su $USER -c 'screen -d -m -S rtorrent rtorrent' &> /dev/null&
+   echo $!>/var/run/rtorrent.pid
+   ;;
+stop)
+   echo rtorrent is stopping
+   killall -w -s 2 /usr/bin/rtorrent &> /dev/null&
+   rm /var/run/rtorrent.pid
+   ;;
+restart)
+   $0 stop
+   $0 start
+   ;;
+status)
+   if [ -e /var/run/rtorrent.pid ]; then
+      echo rtorrent is running, pid=`cat /var/run/rtorrent.pid`
+   else
+      echo rtorrent is NOT running
+      exit 1
+   fi
+   ;;
+*)
+   echo "Usage: $0 {start|stop|status|restart}"
+esac
+
+exit 0
