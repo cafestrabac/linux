@@ -2,6 +2,7 @@
 # Shell script to automatically record my shoutcast stream in mp3 and stream it to FB with a still image.
 
 DATE="`date '+%Y_%m_%d_%I_%M_%S_%p'`"
+FBKEY="[FBKEY]"
 
 if [ -f /home/cafe/shoutcast/rec/oblc.lock ] && kill -0 $(cat /home/cafe/shoutcast/rec/oblc.lock);
 then
@@ -17,7 +18,7 @@ then
   -c:a aac -c:v h264 -b:v 768k \
   -preset ultrafast -tune stillimage -pix_fmt yuvj444p -g 60 \
   -profile:v high444 -level 4.2 \
-  -f flv "rtmp://live-api-s.facebook.com:80/rtmp/{FBKEY}"
+  -f flv "rtmp://live-api-s.facebook.com:80/rtmp/$FBKEY"
   rm /home/cafe/shoutcast/rec/oblc.lock
 else
   echo "Stream is not up!"
